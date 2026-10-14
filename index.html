@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriVoice AI – Smart Voice Assistant for Farmers | ಕೃಷಿಕರ ಸ್ಮಾರ್ಟ್ ಧ್ವನಿ ಸಹಾಯಕ</title>
+    <meta name="description" content="A voice-based AI assistant in Kannada and local languages helping farmers with crop advice, weather updates, disease solutions, and government schemes.">
+    <meta name="keywords" content="AgriVoice, Farmer AI, Kannada Voice Assistant, Agriculture AI, Crop Advice, Weather Updates, Plant Disease, PM Kisan, Krishi">
+    <meta name="theme-color" content="#1b4332">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Kannada:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Top Alert / Helpline Banner -->
+    <aside class="helpline-bar" aria-label="Kisan Helpline">
+        <div class="container helpline-inner">
+            <span class="helpline-text">
+                <span class="pulse-dot"></span>
+                <span class="lang-text" data-kn="📞 ಕಿಸಾನ್ ಸಹಾಯವಾಣಿ (ಉಚಿತ ಕರೆ):" data-en="📞 Kisan Toll-Free Helpline:">📞 ಕಿಸಾನ್ ಸಹಾಯವಾಣಿ (ಉಚಿತ ಕರೆ):</span>
+                <a href="tel:18001801551" class="helpline-num">1800-180-1551</a>
+            </span>
+            <div class="top-bar-right">
+                <span id="offline-badge" class="badge-online">● ಆನ್‌ಲೈನ್</span>
+                <button id="toggle-audio-btn" class="icon-chip" title="ಧ್ವನಿ ಆನ್/ಆಫ್" aria-label="Toggle voice output">
+                    <span id="audio-icon">🔊</span> <span id="audio-label" data-kn="ಧ್ವನಿ ಆನ್" data-en="Voice ON">ಧ್ವನಿ ಆನ್</span>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Header Navigation -->
+    <header class="app-header">
+        <div class="container header-container">
+            <div class="logo-box">
+                <div class="logo-icon-wrapper">
+                    <svg class="leaf-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1 class="brand-title">AgriVoice <span class="brand-badge">AI</span></h1>
+                    <p class="brand-subtitle" data-kn="ಕೃಷಿಕರ ಸ್ಮಾರ್ಟ್ ಧ್ವನಿ ಸಹಾಯಕ" data-en="Smart Voice Assistant for Farmers">ಕೃಷಿಕರ ಸ್ಮಾರ್ಟ್ ಧ್ವನಿ ಸಹಾಯಕ</p>
+                </div>
+            </div>
+
+            <!-- Weather Quick Chip in Header -->
+            <div class="header-weather-chip" id="header-weather-chip" title="ಇಂದಿನ ಹವಾಮಾನ">
+                <span class="weather-mini-icon">🌦️</span>
+                <div class="weather-mini-info">
+                    <span class="weather-mini-temp" id="header-temp">26°C</span>
+                    <span class="weather-mini-city" id="header-city" data-kn="ಮಂಡ್ಯ" data-en="Mandya">ಮಂಡ್ಯ</span>
+                </div>
+            </div>
+
+            <!-- Language Switcher -->
+            <div class="lang-selector">
+                <button class="lang-btn active" data-lang="kn" id="lang-kn-btn">ಕನ್ನಡ</button>
+                <button class="lang-btn" data-lang="en" id="lang-en-btn">English</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="main-tabs" aria-label="Primary Navigation">
+        <div class="container tabs-container">
+            <button class="nav-tab active" data-target="tab-voice" id="tab-voice-btn">
+                <span class="tab-icon">🎤</span>
+                <span class="tab-label" data-kn="ಧ್ವನಿ ಸಹಾಯಕ" data-en="Voice Assistant">ಧ್ವನಿ ಸಹಾಯಕ</span>
+            </button>
+            <button class="nav-tab" data-target="tab-weather" id="tab-weather-btn">
+                <span class="tab-icon">🌦️</span>
+                <span class="tab-label" data-kn="ಹವಾಮಾನ ವರದಿ" data-en="Weather Advisory">ಹವಾಮಾನ ವರದಿ</span>
+            </button>
+            <button class="nav-tab" data-target="tab-crops" id="tab-crops-btn">
+                <span class="tab-icon">🌾</span>
+                <span class="tab-label" data-kn="ಬೆಳೆ ಮಾಹಿತಿ" data-en="Crop Database">ಬೆಳೆ ಮಾಹಿತಿ</span>
+            </button>
+            <button class="nav-tab" data-target="tab-diseases" id="tab-diseases-btn">
+                <span class="tab-icon">🦠</span>
+                <span class="tab-label" data-kn="ರೋಗ & ಕೀಟ ಪರಿಹಾರ" data-en="Disease Doctor">ರೋಗ & ಕೀಟ ಪರಿಹಾರ</span>
+            </button>
+            <button class="nav-tab" data-target="tab-schemes" id="tab-schemes-btn">
+                <span class="tab-icon">📄</span>
+                <span class="tab-label" data-kn="ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು" data-en="Govt Schemes">ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು</span>
+            </button>
+            <button class="nav-tab" data-target="tab-predict" id="tab-predict-btn">
+                <span class="tab-icon">📊</span>
+                <span class="tab-label" data-kn="ಬೆಳೆ ಭವಿಷ್ಯ (ML)" data-en="ML Predictor">ಬೆಳೆ ಭವಿಷ್ಯ (ML)</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="container app-main">
+        
+        <!-- ============================================================= -->
+        <!-- TAB 1: HERO VOICE ASSISTANT (Just Speak -> Instant Answers) -->
+        <!-- ============================================================= -->
+        <section id="tab-voice" class="tab-content active" aria-labelledby="tab-voice-btn">
+            
+            <div class="hero-voice-card">
+                <div class="hero-badge">
+                    <span class="star-icon">✨</span>
+                    <span data-kn="ಟೈಪ್ ಮಾಡುವ ಅಗತ್ಯವಿಲ್ಲ • ನೇರವಾಗಿ ಮಾತನಾಡಿ" data-en="No Typing Needed • Just Speak & Get Answers">ಟೈಪ್ ಮಾಡುವ ಅಗತ್ಯವಿಲ್ಲ • ನೇರವಾಗಿ ಮಾತನಾಡಿ</span>
+                </div>
+                
+                <h2 class="hero-heading" data-kn="ನಿಮ್ಮ ಕೃಷಿ ಪ್ರಶ್ನೆಗಳನ್ನು ಕನ್ನಡದಲ್ಲೇ ಕೇಳಿ" data-en="Ask Your Farming Questions In Your Voice">ನಿಮ್ಮ ಕೃಷಿ ಪ್ರಶ್ನೆಗಳನ್ನು ಕನ್ನಡದಲ್ಲೇ ಕೇಳಿ</h2>
+                <p class="hero-subheading" data-kn="ಬೆಳೆ ಸಲಹೆ 🌾 • ಹವಾಮಾನ 🌦️ • ರೋಗ ಪರಿಹಾರ 🦠 • ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು 📄" data-en="Crop Advice 🌾 • Weather 🌦️ • Disease Solutions 🦠 • Government Schemes 📄">ಬೆಳೆ ಸಲಹೆ 🌾 • ಹವಾಮಾನ 🌦️ • ರೋಗ ಪರಿಹಾರ 🦠 • ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು 📄</p>
+
+                <!-- Voice Mic Interactive Station -->
+                <div class="mic-station">
+                    <!-- Ripple Animation Rings -->
+                    <div class="mic-ripple" id="mic-ripple-1"></div>
+                    <div class="mic-ripple" id="mic-ripple-2"></div>
+                    
+                    <button id="main-mic-btn" class="main-mic-button" aria-label="Start Voice Listening" title="ಧ್ವನಿ ಆರಂಭಿಸಲು ಒತ್ತಿ">
+                        <div class="mic-inner-icon">
+                            <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                <line x1="12" x2="12" y1="19" y2="22"/>
+                            </svg>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Voice Status Badge & Audio Waveform -->
+                <div class="voice-status-container">
+                    <div id="voice-status-badge" class="voice-status-badge status-idle">
+                        <span id="status-dot" class="status-dot"></span>
+                        <span id="voice-status-text" data-kn="ಮೈಕ್ ಒತ್ತಿ ಮಾತನಾಡಿ" data-en="Tap mic and speak">ಮೈಕ್ ಒತ್ತಿ ಮಾತನಾಡಿ</span>
+                    </div>
+
+                    <!-- Live Sound Wave Visualizer Bars -->
+                    <div class="sound-wave" id="sound-wave-bars" aria-hidden="true">
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                    </div>
+                </div>
+
+                <!-- Live User Transcript -->
+                <div class="transcript-box" id="transcript-box" style="display: none;">
+                    <div class="transcript-header">
+                        <span class="transcript-title" data-kn="ನಿಮ್ಮ ಧ್ವನಿ (You said):" data-en="Recognized Voice:">ನಿಮ್ಮ ಧ್ವನಿ (You said):</span>
+                        <span class="live-rec-pill">● ಧ್ವನಿ ಗ್ರಹಿಕೆ</span>
+                    </div>
+                    <p id="transcript-text" class="transcript-text">...</p>
+                </div>
+
+                <!-- Instant AI Answer Card -->
+                <div class="answer-card" id="answer-card" style="display: none;">
+                    <div class="answer-header">
+                        <div class="answer-category-badge" id="answer-category-badge">
+                            🌾 ಬೆಳೆ ಸಲಹೆ
+                        </div>
+                        <div class="answer-controls">
+                            <button id="replay-voice-btn" class="audio-ctrl-btn" title="ಧ್ವನಿ ಮತ್ತೆ ಕೇಳಿ" aria-label="Replay audio">
+                                <span>🔊 ಮತ್ತೆ ಕೇಳಿ</span>
+                            </button>
+                            <button id="stop-voice-btn" class="audio-ctrl-btn ctrl-stop" title="ಧ್ವನಿ ನಿಲ್ಲಿಸಿ" aria-label="Stop audio">
+                                <span>⏹ ನಿಲ್ಲಿಸಿ</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <h3 id="answer-title" class="answer-title">ಕೃಷಿ ಸಲಹೆಗಾರ ಉತ್ತರ</h3>
+                    <div id="answer-body" class="answer-body markdown-content">
+                        <!-- AI Response content rendered here -->
+                    </div>
+
+                    <div class="answer-footer">
+                        <span class="answer-hint" data-kn="💡 ಮತ್ತೊಂದು ಪ್ರಶ್ನೆ ಕೇಳಲು ಮೈಕ್ ಒತ್ತಿ" data-en="💡 Tap mic to ask another question">💡 ಮತ್ತೊಂದು ಪ್ರಶ್ನೆ ಕೇಳಲು ಮೈಕ್ ಒತ್ತಿ</span>
+                        <span class="answer-lang-badge" id="answer-lang-tag">ಕನ್ನಡ</span>
+                    </div>
+                </div>
+
+                <!-- One-Tap Suggested Voice Chips -->
+                <div class="quick-prompts-section">
+                    <p class="quick-prompts-title">
+                        <span data-kn="👇 ಅಥವಾ ಈ ಪ್ರಶ್ನೆಗಳನ್ನು ಒಂದೇ ಸ್ಪರ್ಶದಲ್ಲಿ ಕೇಳಿ:" data-en="👇 Or tap any question to ask instantly:">👇 ಅಥವಾ ಈ ಪ್ರಶ್ನೆಗಳನ್ನು ಒಂದೇ ಸ್ಪರ್ಶದಲ್ಲಿ ಕೇಳಿ:</span>
+                    </p>
+                    <div class="prompt-chips-grid">
+                        <button class="prompt-chip" data-query="ರಾಗಿ ಬಿತ್ತನೆ ಯಾವಾಗ ಮಾಡಬೇಕು?" data-query-en="When to sow Ragi finger millet?">
+                            <span class="chip-emoji">🌾</span>
+                            <span class="chip-txt" data-kn="ರಾಗಿ ಬಿತ್ತನೆ ಯಾವಾಗ ಮಾಡಬೇಕು?" data-en="When to sow Ragi?">ರಾಗಿ ಬಿತ್ತನೆ ಯಾವಾಗ ಮಾಡಬೇಕು?</span>
+                        </button>
+                        <button class="prompt-chip" data-query="ಇಂದಿನ ಹವಾಮಾನ ಮತ್ತು ಮಳೆ ಮುನ್ಸೂಚನೆ ಹೇಗಿದೆ?" data-query-en="Today weather forecast and rain?">
+                            <span class="chip-emoji">🌦️</span>
+                            <span class="chip-txt" data-kn="ಇಂದಿನ ಹವಾಮಾನ ಮತ್ತು ಮಳೆ?" data-en="Today's weather & rain?">ಇಂದಿನ ಹವಾಮಾನ ಮತ್ತು ಮಳೆ?</span>
+                        </button>
+                        <button class="prompt-chip" data-query="ಟೊಮೇಟೊ ಎಲೆ ಸುರುಟು ರೋಗ ಪರಿಹಾರ ಏನು?" data-query-en="Tomato leaf curl disease remedy?">
+                            <span class="chip-emoji">🦠</span>
+                            <span class="chip-txt" data-kn="ಟೊಮೇಟೊ ಎಲೆ ಸುರುಟು ರೋಗ ಪರಿಹಾರ?" data-en="Tomato leaf curl remedy?">ಟೊಮೇಟೊ ಎಲೆ ಸುರುಟು ರೋಗ ಪರಿಹಾರ?</span>
+                        </button>
+                        <button class="prompt-chip" data-query="ಪಿಎಂ ಕಿಸಾನ್ 6000 ರೂಪಾಯಿ ಯೋಜನೆ ವಿವರ?" data-query-en="PM-Kisan 6000 scheme details?">
+                            <span class="chip-emoji">📄</span>
+                            <span class="chip-txt" data-kn="ಪಿಎಂ ಕಿಸಾನ್ 6000 ರೂ. ಯೋಜನೆ?" data-en="PM-Kisan 6000 scheme?">ಪಿಎಂ ಕಿಸಾನ್ 6000 ರೂ. ಯೋಜನೆ?</span>
+                        </button>
+                        <button class="prompt-chip" data-query="ಮೆಕ್ಕೆಜೋಳದ ಸೈನಿಕ ಹುಳು ನಿಯಂತ್ರಣ ಹೇಗೆ?" data-query-en="Fall armyworm control in maize?">
+                            <span class="chip-emoji">🌽</span>
+                            <span class="chip-txt" data-kn="ಮೆಕ್ಕೆಜೋಳದ ಸೈನಿಕ ಹುಳು ನಿಯಂತ್ರಣ?" data-en="Maize fall armyworm control?">ಮೆಕ್ಕೆಜೋಳದ ಸೈನಿಕ ಹುಳು ನಿಯಂತ್ರಣ?</span>
+                        </button>
+                        <button class="prompt-chip" data-query="ಕೃಷಿ ಭಾಗ್ಯ ಕೃಷಿ ಹೊಂಡ ಸಹಾಯಧನ ಎಷ್ಟು?" data-query-en="Krishi Bhagya farm pond subsidy?">
+                            <span class="chip-emoji">💧</span>
+                            <span class="chip-txt" data-kn="ಕೃಷಿ ಭಾಗ್ಯ ಹೊಂಡ ಸಹಾಯಧನ?" data-en="Krishi Bhagya pond subsidy?">ಕೃಷಿ ಭಾಗ್ಯ ಹೊಂಡ ಸಹಾಯಧನ?</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Text Fallback Bar (for noisy fields) -->
+                <div class="text-fallback-wrapper">
+                    <form id="text-ask-form" class="text-input-form">
+                        <input type="text" id="text-query-input" class="text-query-input" placeholder="ಟೈಪ್ ಮಾಡಬೇಕೆಂದರೆ ಇಲ್ಲಿ ಬರೆಯಿರಿ (ಉದಾ: ಭತ್ತದ ಗೊಬ್ಬರ)..." data-placeholder-kn="ಟೈಪ್ ಮಾಡಬೇಕೆಂದರೆ ಇಲ್ಲಿ ಬರೆಯಿರಿ (ಉದಾ: ಭತ್ತದ ಗೊಬ್ಬರ)..." data-placeholder-en="Or type here (e.g. Paddy fertilizer)...">
+                        <button type="submit" class="text-submit-btn" id="text-submit-btn" aria-label="Send Query">
+                            <span data-kn="ಕೇಳಿ" data-en="Ask">ಕೇಳಿ</span>
+                            <svg class="send-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="m22 2-7 20-4-9-9-4Z"/>
+                                <path d="M22 2 11 13"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- TAB 2: LIVE WEATHER & FARMING ADVISORY (Real-time API) -->
+        <!-- ============================================================= -->
+        <section id="tab-weather" class="tab-content" aria-labelledby="tab-weather-btn">
+            
+            <div class="weather-dashboard">
+                <div class="section-title-row">
+                    <div>
+                        <h2 class="section-heading" data-kn="🌦️ ಲೈವ್ ಕೃಷಿ ಹವಾಮಾನ ವರದಿ & ಸಲಹೆ" data-en="🌦️ Live Farming Weather & Advisory">🌦️ ಲೈವ್ ಕೃಷಿ ಹವಾಮಾನ ವರದಿ & ಸಲಹೆ</h2>
+                        <p class="section-subtext" data-kn="ಕರ್ನಾಟಕದ ಜಿಲ್ಲಾವಾರು ನೈಜ ಹವಾಮಾನ ಮತ್ತು ಸಿಂಪಡಣೆ ಮುನ್ಸೂಚನೆ" data-en="Real-time Karnataka district weather and spray advisories">ಕರ್ನಾಟಕದ ಜಿಲ್ಲಾವಾರು ನೈಜ ಹವಾಮಾನ ಮತ್ತು ಸಿಂಪಡಣೆ ಮುನ್ಸೂಚನೆ</p>
+                    </div>
+                    
+                    <!-- District Selector -->
+                    <div class="district-select-wrapper">
+                        <label for="district-select" class="visually-hidden">ಜಿಲ್ಲೆ ಆಯ್ಕೆಮಾಡಿ</label>
+                        <select id="district-select" class="district-select" aria-label="Select Karnataka District">
+                            <option value="mandya">ಮಂಡ್ಯ (Mandya)</option>
+                            <option value="mysuru">ಮೈಸೂರು (Mysuru)</option>
+                            <option value="bengaluru">ಬೆಂಗಳೂರು (Bengaluru)</option>
+                            <option value="hubballi">ಹುಬ್ಬಳ್ಳಿ - ಧಾರವಾಡ (Hubballi)</option>
+                            <option value="belagavi">ಬೆಳಗಾವಿ (Belagavi)</option>
+                            <option value="raichur">ರಾಯಚೂರು (Raichur)</option>
+                            <option value="kalaburagi">ಕಲಬುರಗಿ (Kalaburagi)</option>
+                            <option value="shimoga">ಶಿವಮೊಗ್ಗ (Shivamogga)</option>
+                            <option value="davanagere">ದಾವಣಗೆರೆ (Davanagere)</option>
+                            <option value="hassan">ಹಾಸನ (Hassan)</option>
+                            <option value="tumakuru">ತುಮಕೂರು (Tumakuru)</option>
+                            <option value="bagalkot">ಬಾಗಲಕೋಟೆ (Bagalkot)</option>
+                            <option value="ballari">ಬಳ್ಳಾರಿ (Ballari)</option>
+                            <option value="udupi">ಉಡುಪಿ (Udupi)</option>
+                        </select>
+                        <button id="refresh-weather-btn" class="refresh-btn" title="ಹವಾಮಾನ ನವೀಕರಿಸಿ" aria-label="Refresh weather">🔄</button>
+                    </div>
+                </div>
+
+                <!-- Current Weather Hero Display -->
+                <div class="current-weather-banner" id="current-weather-banner">
+                    <div class="weather-main-info">
+                        <div class="weather-main-badge" id="weather-city-badge">ಮಂಡ್ಯ ಜಿಲ್ಲೆ</div>
+                        <div class="weather-temp-row">
+                            <span class="weather-large-icon" id="weather-main-icon">⛅</span>
+                            <span class="weather-large-temp" id="weather-main-temp">27°C</span>
+                        </div>
+                        <p class="weather-condition-text" id="weather-main-cond">ಭಾಗಶಃ ಮೋಡ ಕವಿದಿದೆ</p>
+                    </div>
+
+                    <!-- Weather Parameters Grid -->
+                    <div class="weather-metrics-grid">
+                        <div class="metric-card">
+                            <span class="metric-icon">💧</span>
+                            <span class="metric-label" data-kn="ಆರ್ದ್ರತೆ (ತೇವಾಂಶ)" data-en="Humidity">ಆರ್ದ್ರತೆ (ತೇವಾಂಶ)</span>
+                            <span class="metric-val" id="weather-humidity">65%</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-icon">🌧️</span>
+                            <span class="metric-label" data-kn="ಮಳೆಯ ಸಂಭವ" data-en="Rain Probability">ಮಳೆಯ ಸಂಭವ</span>
+                            <span class="metric-val" id="weather-rain-prob">15%</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-icon">💨</span>
+                            <span class="metric-label" data-kn="ಗಾಳಿಯ ವೇಗ" data-en="Wind Speed">ಗಾಳಿಯ ವೇಗ</span>
+                            <span class="metric-val" id="weather-wind">9.2 km/h</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-icon">🚜</span>
+                            <span class="metric-label" data-kn="ಸಿಂಪಡಣೆ ಸ್ಥಿತಿ" data-en="Spray Condition">ಸಿಂಪಡಣೆ ಸ್ಥಿತಿ</span>
+                            <span class="metric-val status-good" id="weather-spray-status">ಅನುಕೂಲಕರ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Agricultural Advisory Box -->
+                <div class="farming-advisory-card" id="farming-advisory-card">
+                    <div class="advisory-header">
+                        <div class="advisory-title-box">
+                            <span class="advisory-badge-icon">📢</span>
+                            <h3 id="advisory-headline" class="advisory-headline">ಕೃಷಿ ಹವಾಮಾನ ಸಲಹೆ</h3>
+                        </div>
+                        <button id="advisory-audio-btn" class="audio-ctrl-btn" title="ಸಲಹೆ ಆಲಿಸಿ">
+                            <span>🔊 ಸಲಹೆ ಕೇಳಿ</span>
+                        </button>
+                    </div>
+                    
+                    <div class="advisory-items-list" id="advisory-items-list">
+                        <div class="advisory-item">
+                            <span class="item-icon">🌱</span>
+                            <p id="advisory-spraying" class="item-text">ಕೀಟನಾಶಕ ಸಿಂಪಡಣೆಗೆ ಮತ್ತು ಗೊಬ್ಬರ ನೀಡಲು ಸೂಕ್ತ ಹವಾಮಾನವಿದೆ.</p>
+                        </div>
+                        <div class="advisory-item">
+                            <span class="item-icon">💧</span>
+                            <p id="advisory-irrigation" class="item-text">ಬೆಳೆಯ ಹಂತಕ್ಕೆ ತಕ್ಕಂತೆ ನಿಯಮಿತವಾಗಿ ನೀರು ಹಾಯಿಸಿ.</p>
+                        </div>
+                        <div class="advisory-item">
+                            <span class="item-icon">🛡️</span>
+                            <p id="advisory-drainage" class="item-text">ಜಮೀನಿನಲ್ಲಿ ನೀರು ಸರಾಗವಾಗಿ ಹರಿದುಹೋಗುವಂತೆ ನೋಡಿಕೊಳ್ಳಿ.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7-Day Forecast Grid -->
+                <div class="forecast-section">
+                    <h3 class="forecast-title" data-kn="📅 7 ದಿನಗಳ ಹವಾಮಾನ ಮುನ್ಸೂಚನೆ" data-en="📅 7-Day Agricultural Forecast">📅 7 ದಿನಗಳ ಹವಾಮಾನ ಮುನ್ಸೂಚನೆ</h3>
+                    <div class="forecast-cards-grid" id="forecast-cards-grid">
+                        <!-- Loaded dynamically from API -->
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- TAB 3: CROP TIPS DATABASE (Comprehensive Knowledge) -->
+        <!-- ============================================================= -->
+        <section id="tab-crops" class="tab-content" aria-labelledby="tab-crops-btn">
+            
+            <div class="crops-container">
+                <div class="section-title-row">
+                    <div>
+                        <h2 class="section-heading" data-kn="🌾 ಬೆಳೆ ಮಾಹಿತಿ ಭಂಡಾರ (Crop Tips)" data-en="🌾 Crop Tips Database">🌾 ಬೆಳೆ ಮಾಹಿತಿ ಭಂಡಾರ (Crop Tips)</h2>
+                        <p class="section-subtext" data-kn="ಕರ್ನಾಟಕದ ಪ್ರಮುಖ ಬೆಳೆಗಳ ಬಿತ್ತನೆ, ಗೊಬ್ಬರ, ನೀರು ಮತ್ತು ಇಳುವರಿ ವಿವರ" data-en="Sowing seasons, fertilizers, irrigation and yield guidelines">ಕರ್ನಾಟಕದ ಪ್ರಮುಖ ಬೆಳೆಗಳ ಬಿತ್ತನೆ, ಗೊಬ್ಬರ, ನೀರು ಮತ್ತು ಇಳುವರಿ ವಿವರ</p>
+                    </div>
+                    
+                    <!-- Search Input -->
+                    <div class="search-box">
+                        <input type="text" id="crop-search-input" placeholder="ಬೆಳೆ ಹುಡುಕಿ (ರಾಗಿ, ಭತ್ತ, ಕಬ್ಬು...)" data-placeholder-kn="ಬೆಳೆ ಹುಡುಕಿ (ರಾಗಿ, ಭತ್ತ, ಕಬ್ಬು...)" data-placeholder-en="Search crop (Ragi, Paddy, Cotton...)">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                </div>
+
+                <!-- Category Filters -->
+                <div class="category-pills-bar">
+                    <button class="cat-pill active" data-cat="all" data-kn="ಎಲ್ಲಾ ಬೆಳೆಗಳು" data-en="All Crops">ಎಲ್ಲಾ ಬೆಳೆಗಳು</button>
+                    <button class="cat-pill" data-cat="millets" data-kn="ಸಿರಿಧಾನ್ಯಗಳು" data-en="Millets">ಸಿರಿಧಾನ್ಯಗಳು</button>
+                    <button class="cat-pill" data-cat="cereals" data-kn="ಆಹಾರ ಧಾನ್ಯಗಳು" data-en="Cereals">ಆಹಾರ ಧಾನ್ಯಗಳು</button>
+                    <button class="cat-pill" data-cat="commercial" data-kn="ವಾಣಿಜ್ಯ ಬೆಳೆಗಳು" data-en="Commercial">ವಾಣಿಜ್ಯ ಬೆಳೆಗಳು</button>
+                    <button class="cat-pill" data-cat="horticulture" data-kn="ತೋಟಗಾರಿಕೆ" data-en="Horticulture">ತೋಟಗಾರಿಕೆ</button>
+                    <button class="cat-pill" data-cat="pulses" data-kn="ಬೇಳೆಕಾಳುಗಳು" data-en="Pulses">ಬೇಳೆಕಾಳುಗಳು</button>
+                </div>
+
+                <!-- Crop Cards Grid -->
+                <div class="crops-grid" id="crops-grid">
+                    <!-- Populated via Javascript -->
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- TAB 4: DISEASE DOCTOR (Disease & Pest Solutions) -->
+        <!-- ============================================================= -->
+        <section id="tab-diseases" class="tab-content" aria-labelledby="tab-diseases-btn">
+            
+            <div class="diseases-container">
+                <div class="section-title-row">
+                    <div>
+                        <h2 class="section-heading" data-kn="🦠 ಬೆಳೆ ರೋಗ & ಕೀಟ ವೈದ್ಯ (Disease Doctor)" data-en="🦠 Plant Disease & Pest Doctor">🦠 ಬೆಳೆ ರೋಗ & ಕೀಟ ವೈದ್ಯ (Disease Doctor)</h2>
+                        <p class="section-subtext" data-kn="ರೋಗ ಲಕ್ಷಣಗಳನ್ನು ಗುರುತಿಸಿ • ಸಾವಯವ & ರಾಸಾಯನಿಕ ಪರಿಹಾರ ಪಡೆಯಿರಿ" data-en="Identify symptoms • Get organic & chemical solutions with exact doses">ರೋಗ ಲಕ್ಷಣಗಳನ್ನು ಗುರುತಿಸಿ • ಸಾವಯವ & ರಾಸಾಯನಿಕ ಪರಿಹಾರ ಪಡೆಯಿರಿ</p>
+                    </div>
+                </div>
+
+                <!-- Crop Filter for Diseases -->
+                <div class="disease-filter-row">
+                    <span class="filter-label" data-kn="ಬೆಳೆ ಆಯ್ಕೆಮಾಡಿ:" data-en="Select Crop:">ಬೆಳೆ ಆಯ್ಕೆಮಾಡಿ:</span>
+                    <div class="disease-crop-tags" id="disease-crop-tags">
+                        <button class="crop-tag-btn active" data-filter="all">ಎಲ್ಲಾ ರೋಗಗಳು</button>
+                        <button class="crop-tag-btn" data-filter="Tomato">ಟೊಮೇಟೊ</button>
+                        <button class="crop-tag-btn" data-filter="Paddy">ಭತ್ತ</button>
+                        <button class="crop-tag-btn" data-filter="Maize">ಮೆಕ್ಕೆಜೋಳ</button>
+                        <button class="crop-tag-btn" data-filter="Sugarcane">ಕಬ್ಬು</button>
+                        <button class="crop-tag-btn" data-filter="Cotton">ಹತ್ತಿ</button>
+                    </div>
+                </div>
+
+                <!-- Disease Solutions Grid -->
+                <div class="diseases-grid" id="diseases-grid">
+                    <!-- Populated via Javascript -->
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- TAB 5: GOVERNMENT SCHEMES (Subsidies & Welfare) -->
+        <!-- ============================================================= -->
+        <section id="tab-schemes" class="tab-content" aria-labelledby="tab-schemes-btn">
+            
+            <div class="schemes-container">
+                <div class="section-title-row">
+                    <div>
+                        <h2 class="section-heading" data-kn="📄 ರೈತ ಕಲ್ಯಾಣ & ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು" data-en="📄 Farmer Welfare & Govt Schemes">📄 ರೈತ ಕಲ್ಯಾಣ & ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು</h2>
+                        <p class="section-subtext" data-kn="ಪಿಎಂ ಕಿಸಾನ್, ರೈತ ಸಿರಿ, ಕೃಷಿ ಭಾಗ್ಯ, ಬೆಳೆ ವಿಮೆ ಮತ್ತು ಸಹಾಯಧನಗಳ ಸಮಗ್ರ ವಿವರ" data-en="Direct subsidies, PM-Kisan, insurance, and application procedures">ಪಿಎಂ ಕಿಸಾನ್, ರೈತ ಸಿರಿ, ಕೃಷಿ ಭಾಗ್ಯ, ಬೆಳೆ ವಿಮೆ ಮತ್ತು ಸಹಾಯಧನಗಳ ಸಮಗ್ರ ವಿವರ</p>
+                    </div>
+                </div>
+
+                <!-- Schemes Grid -->
+                <div class="schemes-grid" id="schemes-grid">
+                    <!-- Populated via Javascript -->
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ============================================================= -->
+        <!-- TAB 6: AI ML CROP PREDICTOR -->
+        <!-- ============================================================= -->
+        <section id="tab-predict" class="tab-content" aria-labelledby="tab-predict-btn">
+            
+            <div class="ml-predict-container">
+                <div class="section-title-row">
+                    <div>
+                        <h2 class="section-heading" data-kn="📊 ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ (ML) ಬೆಳೆ ಭವಿಷ್ಯ" data-en="📊 AI Machine Learning Crop Predictor">📊 ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ (ML) ಬೆಳೆ ಭವಿಷ್ಯ</h2>
+                        <p class="section-subtext" data-kn="ಮಳೆ, ತಾಪಮಾನ, ಆರ್ದ್ರತೆ ಮತ್ತು ಮಣ್ಣು pH ಆಧಾರಿತ ಸೂಕ್ತ ಬೆಳೆ ಶಿಫಾರಸು" data-en="Random Forest Model trained on environmental data to recommend optimal crop">ಮಳೆ, ತಾಪಮಾನ, ಆರ್ದ್ರತೆ ಮತ್ತು ಮಣ್ಣು pH ಆಧಾರಿತ ಸೂಕ್ತ ಬೆಳೆ ಶಿಫಾರಸು</p>
+                    </div>
+                </div>
+
+                <div class="ml-layout">
+                    <!-- Parameters Input Form -->
+                    <div class="ml-form-card">
+                        <h3 class="form-title" data-kn="ಪರಿಸರ & ಮಣ್ಣಿನ ವಿವರ ನಮೂದಿಸಿ" data-en="Enter Environmental & Soil Parameters">ಪರಿಸರ & ಮಣ್ಣಿನ ವಿವರ ನಮೂದಿಸಿ</h3>
+                        
+                        <!-- Zone Presets -->
+                        <div class="presets-row">
+                            <span class="presets-label" data-kn="ಕರ್ನಾಟಕದ ವಲಯಗಳು:" data-en="Zone Presets:">ಕರ್ನಾಟಕದ ವಲಯಗಳು:</span>
+                            <button type="button" class="preset-btn" data-rain="120" data-temp="27" data-hum="65" data-ph="6.5">ದಕ್ಷಿಣ ಒಣ ವಲಯ (ಮಂಡ್ಯ/ಮೈಸೂರು)</button>
+                            <button type="button" class="preset-btn" data-rain="220" data-temp="24" data-hum="85" data-ph="5.8">ಮಲೆನಾಡು (ಶಿವಮೊಗ್ಗ/ಹಾಸನ)</button>
+                            <button type="button" class="preset-btn" data-rain="65" data-temp="32" data-hum="50" data-ph="7.2">ಉತ್ತರ ಒಣ ವಲಯ (ರಾಯಚೂರು/ಕಲಬುರಗಿ)</button>
+                        </div>
+
+                        <form id="ml-predict-form" class="predict-fields-grid">
+                            <div class="input-group">
+                                <label for="input-rainfall" data-kn="🌧️ ವಾರ್ಷಿಕ ಮಳೆ (ಮಿ.ಮೀ)" data-en="🌧️ Rainfall (mm)">🌧️ ವಾರ್ಷಿಕ ಮಳೆ (ಮಿ.ಮೀ)</label>
+                                <input type="number" id="input-rainfall" value="120" min="20" max="400" required>
+                                <span class="input-hint">20 - 300 mm</span>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="input-temp" data-kn="🌡️ ಸರಾಸರಿ ತಾಪಮಾನ (°C)" data-en="🌡️ Temperature (°C)">🌡️ ಸರಾಸರಿ ತಾಪಮಾನ (°C)</label>
+                                <input type="number" id="input-temp" value="26" min="10" max="45" required>
+                                <span class="input-hint">15°C - 40°C</span>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="input-humidity" data-kn="💧 ಆರ್ದ್ರತೆ (%)" data-en="💧 Humidity (%)">💧 ಆರ್ದ್ರತೆ (%)</label>
+                                <input type="number" id="input-humidity" value="70" min="20" max="100" required>
+                                <span class="input-hint">30% - 95%</span>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="input-ph" data-kn="🧪 ಮಣ್ಣಿನ pH ಮಟ್ಟ" data-en="🧪 Soil pH Level">🧪 ಮಣ್ಣಿನ pH ಮಟ್ಟ</label>
+                                <input type="number" id="input-ph" value="6.5" step="0.1" min="4.0" max="9.0" required>
+                                <span class="input-hint">5.5 (ಆಮ್ಲ) - 7.5 (ತಟಸ್ಥ)</span>
+                            </div>
+
+                            <button type="submit" class="predict-submit-btn" id="predict-submit-btn">
+                                <span data-kn="🌾 ಬೆಳೆ ಶಿಫಾರಸು ಪಡೆಯಿರಿ" data-en="🌾 Predict Best Crop">🌾 ಬೆಳೆ ಶಿಫಾರಸು ಪಡೆಯಿರಿ</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Prediction Result Card -->
+                    <div class="ml-result-card" id="ml-result-card">
+                        <div class="result-placeholder" id="result-placeholder">
+                            <span class="big-icon">🌾</span>
+                            <h4 data-kn="ಫಲಿತಾಂಶ ಇಲ್ಲಿ ಪ್ರದರ್ಶನಗೊಳ್ಳುತ್ತದೆ" data-en="Prediction Result Will Appear Here">ಫಲಿತಾಂಶ ಇಲ್ಲಿ ಪ್ರದರ್ಶನಗೊಳ್ಳುತ್ತದೆ</h4>
+                            <p data-kn="ವಿವರಗಳನ್ನು ನಮೂದಿಸಿ 'ಬೆಳೆ ಶಿಫಾರಸು ಪಡೆಯಿರಿ' ಬಟನ್ ಒತ್ತಿ" data-en="Fill parameters and tap predict button">ವಿವರಗಳನ್ನು ನಮೂದಿಸಿ 'ಬೆಳೆ ಶಿಫಾರಸು ಪಡೆಯಿರಿ' ಬಟನ್ ಒತ್ತಿ</p>
+                        </div>
+
+                        <div class="result-active-content" id="result-active-content" style="display: none;">
+                            <div class="result-badge">AI MODEL PREDICTION</div>
+                            <h3 class="predicted-crop-title" id="predicted-crop-name">Rice / ಭತ್ತ</h3>
+                            <p class="predicted-explanation" id="predicted-explanation">
+                                ನಿಮ್ಮ ಪರಿಸರ ಮತ್ತು ಮಣ್ಣಿನ ಪರಿಸ್ಥಿತಿಗೆ ಈ ಬೆಳೆ ಅತ್ಯಧಿಕ ಇಳುವರಿ ಮತ್ತು ಕಡಿಮೆ ರೋಗದ ಅಪಾಯವನ್ನು ನೀಡುತ್ತದೆ.
+                            </p>
+                            <div class="features-summary" id="features-summary">
+                                <!-- Parameters summary pills -->
+                            </div>
+                            <button id="listen-prediction-btn" class="audio-ctrl-btn" style="margin-top: 1.5rem;">
+                                <span>🔊 ಧ್ವನಿಯಲ್ಲಿ ಕೇಳಿ</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <div class="container footer-content">
+            <div class="footer-left">
+                <p class="footer-brand">AgriVoice AI • ಅಗ್ರಿವಾಯ್ಸ್</p>
+                <p class="footer-desc" data-kn="ರೈತರಿಗಾಗಿ ಧ್ವನಿ ಆಧಾರಿತ ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಸಹಾಯಕ. ಭಾರತೀಯ ಕೃಷಿಕರ ಉನ್ನತಿಗಾಗಿ ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ." data-en="Voice-first AI assistant built specifically for farmers. Empowering agriculture with simplicity.">ರೈತರಿಗಾಗಿ ಧ್ವನಿ ಆಧಾರಿತ ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಸಹಾಯಕ. ಭಾರತೀಯ ಕೃಷಿಕರ ಉನ್ನತಿಗಾಗಿ ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ.</p>
+            </div>
+            <div class="footer-right">
+                <p class="footer-contact">
+                    <span data-kn="ಕಿಸಾನ್ ಸಹಾಯವಾಣಿ:" data-en="Kisan Helpline:">ಕಿಸಾನ್ ಸಹಾಯವಾಣಿ:</span> <strong>1800-180-1551</strong>
+                </p>
+                <p class="footer-tagline">Made with ❤️ for Indian Farmers</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Audio Player for TTS Streaming -->
+    <audio id="tts-audio-player" preload="none" style="display: none;"></audio>
+
+    <script src="app.js"></script>
+</body>
+</html>

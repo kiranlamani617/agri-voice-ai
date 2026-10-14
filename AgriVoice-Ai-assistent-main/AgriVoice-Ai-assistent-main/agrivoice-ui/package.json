@@ -1,0 +1,19 @@
+{
+  "name": "agrivoice-ui",
+  "version": "2.0.0",
+  "description": "AgriVoice AI - Smart Voice Assistant for Farmers in Kannada & Local Languages",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "agriculture",
+    "voice-assistant",
+    "kannada",
+    "ai",
+    "farmers"
+  ],
+  "author": "AgriVoice Team",
+  "license": "MIT"
+}
